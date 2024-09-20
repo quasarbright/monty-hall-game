@@ -1,24 +1,24 @@
-import React from 'react';
+import React, { useReducer, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { State, reducer } from './reducer';
+import { Game } from './game';
 
 function App() {
+  const [numDoors, setNumDoors] = useState(3)
+  const [state, dispatch] = useReducer(reducer, {})
+  function startGame() {
+    dispatch(["START", numDoors])
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Monty Hall</h1>
+      <label htmlFor="numDoors">Number of doors </label>
+      <input type='number' id='numDoors' defaultValue={3} min={3} max={100} onChange={(ev) => setNumDoors(parseInt(ev.target.value, 10))}/>
+      <br/>
+      <button onClick={startGame}>play</button>
+      <br/>
+      <Game state={state} dispatch={dispatch}/>
     </div>
   );
 }

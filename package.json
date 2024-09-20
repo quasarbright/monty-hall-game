@@ -1,5 +1,6 @@
 {
   "name": "monty-hall-game",
+  "homepage": "https://quasarbright.github.io/monty-hall-game",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -10,6 +11,7 @@
     "@types/node": "^16.18.108",
     "@types/react": "^18.3.8",
     "@types/react-dom": "^18.3.0",
+    "gh-pages": "^6.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
