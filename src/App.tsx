@@ -11,7 +11,7 @@ function App() {
     dispatch(["START", numDoors])
   }
   return (
-    <div>
+    <div style={{padding: 20}}>
       <h1>Monty Hall</h1>
       <label htmlFor="numDoors">Number of doors </label>
       <input type='number' id='numDoors' defaultValue={3} min={3} max={100} onChange={(ev) => setNumDoors(parseInt(ev.target.value, 10))}/>
