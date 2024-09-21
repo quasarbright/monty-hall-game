@@ -6,8 +6,8 @@ interface Door {
   revealed: boolean
 }
 
-const containerStyle: React.CSSProperties = {display: 'flex', flexWrap: 'wrap', width: 400}
-const doorStyle: React.CSSProperties = {marginLeft: 10, borderStyle: 'solid', fontFamily: 'monospace'}
+const containerStyle: React.CSSProperties = {display: 'flex', flexWrap: 'wrap', maxWidth: 350}
+const doorStyle: React.CSSProperties = {margin: 5, borderStyle: 'solid', fontFamily: 'monospace', fontSize: 32}
 const guessedStyle: React.CSSProperties = {borderColor: 'blue', color: 'blue'}
 const otherStyle: React.CSSProperties = {borderColor: 'green', color: 'green'}
 
