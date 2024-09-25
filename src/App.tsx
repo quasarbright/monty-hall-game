@@ -1,7 +1,6 @@
-import React, { useEffect, useReducer, useState } from 'react';
-import logo from './logo.svg';
+import { useEffect, useReducer, useState } from 'react';
 import './App.css';
-import { State, reducer } from './reducer';
+import { reducer } from './reducer';
 import { Game } from './game';
 import { MathJax } from 'better-react-mathjax';
 
@@ -56,26 +55,64 @@ const Math = ({numDoors}: {numDoors: number}) => {
 
       <p>
       Initially, we have a {pNoSwitch} probability of guessing correctly. But now we have more information. We know that the prize is either behind our guess door or the other door.
-      It seems like we have a {'\\(\\frac{1}{2}\\)'} probability of winning now with switching or not switching, but this is wrong.
+      It seems like we have a {'\\(\\frac{1}{2}\\)'} probability of winning now with switching or not switching, but this is wrong. We can use Bayes' theorem to properly update our beliefs
+      with the new information we've observed.
       </p>
 
       <p>
-      Let's think about the two possible scenarios: In scenario A, the prize is behind our guess and the other door got chosen randomly.
-      We know that the other door is the one that got chosen, so we can consider that a given. The only unknown is whether our initial guess was correct, which has probability {pNoSwitch}. This means the probability of scenario A is {pNoSwitch}.
+        Let's say we guess the first door. This doesn't effect the probabilities, it just helps us keep the explanation simple. Next, in the case of 3 doors,
+        one door gets revealed and the other remains hidden. Let's say the revealed door is the second door. Again, this doesn't effect the probabilities. We'll denote this information as {'\\(E\\)'}.
       </p>
 
       <p>
-      In scenario B, the prize is behind the other door and our guess is wrong. If our guess is wrong, then the other door has to be the prize door. There is no randomness like scenario A.
-      The probability of our guess being wrong is {pSwitch}.
+        What we want to know is the probability that the prize is behind the first door given the new information that the second door doesn't have the prize, which we'll write as
+        {'\\[P\\left(H_1 \\;\\middle|\\; E\\right)\\]'}
+        Where {'\\(H_1\\)'} means the prize is behind door 1.
       </p>
 
       <p>
-      Scenario B is more likely, so we should switch.
+        According to Bayes' theorem,
+        {'\\[P\\left(H_1 \\;\\middle|\\; E\\right) = \\frac{P\\left(E \\;\\middle|\\; H_1\\right) P(H_1)}{P(E)}\\]'}
       </p>
 
       <p>
-      It really just comes down to whether our initial guess was correct. If it was, we should not switch. If it wasn't, we should switch. Since it's more likely that our
-      guess was incorrect, we should always switch. Try playing with 100 doors. You will win almost every time by switching.
+        In the numerator, we have {'\\(P\\left(E \\;\\middle|\\; H_1\\right)\\)'}, which is the probability of door 2 being revealed, given that the prize is behind door 1.
+        Remember, if the prize is behind door 1, then another door is chosen randomly to be revealed. Since there are two other doors to choose from, this probability is {'\\(\\frac{1}{2}\\)'}.
+      </p>
+
+      <p>We also have {'\\(P(H_1)\\)'}, the probability that the prize is behind the first door, which is {'\\(\\frac{1}{3}\\)'}</p>
+
+      <p>
+        {'\\(P(E)\\)'} is the probability of the second door being revealed. For this, we'll need to use the law of total probability, enumerating over each possible scenario.
+        There are three scenarios: The prize is behind door 1 ({'\\(H_1\\)'}), the prize is behind door 2 ({'\\(H_2\\)'}), or it's behind door 3 ({'\\(H_3\\)'}). This means
+        {'\\[P(E) = P\\left(E \\;\\middle|\\; H_1\\right) P(H_1) + P\\left(E \\;\\middle|\\; H_2\\right) P(H_2) + P\\left(E \\;\\middle|\\; H_3\\right) P(H_3)\\]'}
+      </p>
+
+      <p>
+        We already know that {'\\(P\\left(E \\;\\middle|\\; H_1\\right) = \\frac{1}{2}\\)'}. And if the prize was behind the second door, then the door couldn't have been revealed, so {'\\(P\\left(E \\;\\middle|\\; H_2\\right) = 0\\)'}.
+        Finally, If the prize is behind the third door, then the second door would definitely have to be revealed, so {'\\(P\\left(E \\;\\middle|\\; H_3\\right) = 1\\)'}. Also, since all doors have an equal chance to have the prize, we know
+        {'\\(H_1 = H_2 = H_3 = \\frac{1}{3}\\)'}.
+      </p>
+
+      <p>
+        Putting it all together, we get {'\\(P(E) = \\frac{1}{2} \\cdot \\frac{1}{3} + 0 + 1 \\cdot \\frac{1}{3} = \\frac{1}{2}\\)'}.
+      </p>
+
+      <p>
+        Now we can plug everything in to find our goal:
+        {'\\[P\\left(H_1 \\;\\middle|\\; E\\right) = \\frac{\\frac{1}{2} \\cdot \\frac{1}{3}}{\\frac{1}{2}} = \\frac{1}{3}\\]'}
+      </p>
+
+      <p>
+        That's the probability that the prize is behind the original door we guessed, given the information that the second door was revealed. Since there is only one other door to choose, the probability that it's
+        behind that door is {'\\(\\frac{2}{3}\\)'}, which means you're more likely to win when you switch.
+      </p>
+
+      <p>
+        But how did gaining new information not affect the probability of the prize being behind the door we guessed? It's because we learned something about the other doors, not the door we guessed.
+        Revealing doors that don't contain the prize doesn't tell us anything about the door that we guessed because regardless of the correctness of our guess, a door would be opened. However, this information does allow us to refine our
+        knowledge of the other doors. There is still a probability of {'\\(\\frac{2}{3}\\)'} that the prize is behind a door that we did not guess, but since all but one other door was revealed, it's as if the whole {'\\(\\frac{2}{3}\\)'} probability
+        gets absorbed into the other hidden door, which is why it's so much better to switch. Try playing the game with 10 or even 100 doors. The odds of winning by switching improve even more as you increase the total number of doors.
       </p>
     </div>
   )
